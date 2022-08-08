@@ -30,7 +30,7 @@ app.post('/contact',(req,res)=>{
     })
 })
 
-app.post('/blog',(req,res)=>{
+app.post('/addBlog',(req,res)=>{
     const {title,message} = req.body
 
     const msg = new Message({title, message})
@@ -38,6 +38,12 @@ app.post('/blog',(req,res)=>{
         res.status(200).json({Success:true,message:msg});
     }).catch((err)=>{
         res.status(204).json({Success:false,message:err});
+    })
+})
+
+app.get('/getBlog',(req,res)=>{
+    Message.find((err,data)=>{
+        res.send(data)
     })
 })
 
