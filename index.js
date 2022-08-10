@@ -5,7 +5,9 @@ const bodyParser = require('body-parser')
 const Contact = require('./model/model')
 const Message = require('./model/msgModel')
 const port = process.env.PORT || 5000
+const cors = require('cors')
 
+app.use(cors())
 mongoose.connect('mongodb+srv://blog:blog1234@cluster0.uv0j1qr.mongodb.net/BlogApp').then(()=>{
     console.log("Connection successful...");
 }).catch((err)=>{
