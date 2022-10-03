@@ -70,7 +70,7 @@ app.get("/getBlog", async (req, res) => {
   const limit = parseInt(size);
 
   const totalPosts = await Post.find();
-  const filteredPosts = await Post.find().limit(limit);
+  const filteredPosts = await Post.find().sort({date: -1}).limit(limit);
   res.status(200).send({
     page,
     size,
