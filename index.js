@@ -34,8 +34,13 @@ app.post("/contact", (req, res) => {
       res.status(200).json({ Success: true, message: contact });
     })
     .catch((err) => {
-      res.status(204).json({ Success: false, message: err });
+      res.status(300).json({ Success: false, message: err });
     });
+});
+
+app.get("/getMessages", async (req, res) => {
+  const messages = await Contact.find();
+  res.status(200).send({ Success: true, messages });
 });
 
 app.post("/addBlog", (req, res) => {
@@ -48,7 +53,7 @@ app.post("/addBlog", (req, res) => {
       res.status(200).json({ Success: true, message: msg });
     })
     .catch((err) => {
-      res.status(204).json({ Success: false, message: err });
+      res.status(300).json({ Success: false, message: err });
     });
 });
 
@@ -66,7 +71,7 @@ app.get("/getBlog", async (req, res) => {
 
   const totalPosts = await Post.find();
   const filteredPosts = await Post.find().limit(limit);
-  res.send({
+  res.status(200).send({
     page,
     size,
     posts: filteredPosts,
