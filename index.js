@@ -70,13 +70,31 @@ app.get("/getBlog", async (req, res) => {
   const limit = parseInt(size);
 
   const totalPosts = await Post.find();
-  const filteredPosts = await Post.find().sort({date: -1}).limit(limit);
+  const filteredPosts = await Post.find().sort({ date: -1 }).limit(limit);
   res.status(200).send({
     page,
     size,
     posts: filteredPosts,
     NoOfPosts: filteredPosts.length,
     totalNoPosts: totalPosts.length,
+  });
+});
+
+app.update("/updateBlog", (req, res) => {
+  const { title, description, image, id } = req.body;
+  Post.updateOne(
+    { _id: id },
+    { title: title, description: description, image: image },
+    (err, data) => {
+      res.status(200).send({ Success: true, err, data });
+    }
+  );
+});
+
+app.delete("/deleteBlog", (req, res) => {
+  const { id } = req.body;
+  Post.deleteOne({ _id: id }, (err, data) => {
+    res.status(200).send({ Success: true, err, data });
   });
 });
 
