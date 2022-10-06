@@ -80,7 +80,7 @@ app.get("/getBlog", async (req, res) => {
   });
 });
 
-app.update("/updateBlog", (req, res) => {
+app.put("/updateBlog", (req, res) => {
   const { title, description, image, id } = req.body;
   Post.updateOne(
     { _id: id },
