@@ -59,21 +59,23 @@ app.get("/getMessages", async (req, res) => {
 app.post("/addBlog", uploads.single("image"), (req, res) => {
   const image = req.file;
   const { title, description } = req.body;
-  console.log(req.body);
   console.log(image);
   const post = new Post({
     title,
     description,
-    image,
+    image: {
+      data: fs.readFileSync("uploads/" + req.file.filename),
+      contentType: image.mimetype,
+    },
   });
 
   post
     .save()
     .then(() => {
-      res.status(200).json({ Success: true, message: msg });
+      res.status(200).json({ Success: true, message: post });
     })
     .catch((err) => {
-      res.status(300).json({ Success: false, message: err, message: msg });
+      res.status(300).json({ Success: false, message: err, message: post });
     });
 });
 
