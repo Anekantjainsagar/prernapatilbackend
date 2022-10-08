@@ -56,16 +56,11 @@ app.get("/getMessages", async (req, res) => {
   res.status(200).send({ Success: true, messages });
 });
 
-app.post("/addBlog", uploads.single("image"), (req, res) => {
-  const { title, description, image } = req.body;
-
+app.post("/addBlog", (req, res) => {
+  const { title, description } = req.body;
   const post = new Post({
     title,
     description,
-    image: {
-      data: fs.readFileSync("uploads/" + req.file.filename),
-      contentType: "image/png",
-    },
   });
 
   post
@@ -77,6 +72,8 @@ app.post("/addBlog", uploads.single("image"), (req, res) => {
       res.status(300).json({ Success: false, message: err });
     });
 });
+
+app.put("/setImage", uploads.single("image"), (req, res) => {});
 
 app.get("/getBlog", async (req, res) => {
   var { page, size } = req.query;
@@ -92,10 +89,21 @@ app.get("/getBlog", async (req, res) => {
 
   const totalPosts = await Post.find();
   const filteredPosts = await Post.find().sort({ date: -1 }).limit(limit);
+  const objectOfImage = filteredPosts.map((post) => {
+    return {
+      title: post.title,
+      description: post.description,
+      date: post.date,
+      _id: post._id,
+      image: `data:${post.image.contentType};base64${post.image.data.toString(
+        "base64"
+      )}`,
+    };
+  });
   res.status(200).send({
     page,
     size,
-    posts: filteredPosts,
+    posts: objectOfImage,
     NoOfPosts: filteredPosts.length,
     totalNoPosts: totalPosts.length,
   });
