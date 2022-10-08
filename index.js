@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const Contact = require("./model/model");
 const Post = require("./model/PostModel");
+const multer = require("multer");
 const port = process.env.PORT || 5000;
+const fs = require("fs");
 
 app.use(cors());
 mongoose
@@ -19,6 +21,17 @@ mongoose
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+const Storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+
+const uploads = multer({ storage: Storage });
 
 app.get("/", (req, res) => {
   res.send("Hello world");
@@ -43,10 +56,18 @@ app.get("/getMessages", async (req, res) => {
   res.status(200).send({ Success: true, messages });
 });
 
-app.post("/addBlog", (req, res) => {
+app.post("/addBlog", uploads.single("image"), (req, res) => {
   const { title, description, image } = req.body;
 
-  const post = new Post({ title, description, image });
+  const post = new Post({
+    title,
+    description,
+    image: {
+      data: fs.readFileSync("uploads/" + req.file.filename),
+      contentType: "image/png",
+    },
+  });
+
   post
     .save()
     .then(() => {
