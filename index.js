@@ -94,14 +94,15 @@ app.get("/getBlog", async (req, res) => {
   const totalPosts = await Post.find();
   const filteredPosts = await Post.find().sort({ date: -1 }).limit(limit);
   const objectOfImage = filteredPosts.map((post) => {
+    console.log(Object.keys(post.image));
     return {
       title: post.title,
       description: post.description,
       date: post.date,
       _id: post._id,
-      image: `data:${
-        post.image.contentType
-      };base64${post.image.data.data?.toString("base64")}`,
+      image: `data:${post.image.contentType};base64${post.image.data?.toString(
+        "base64"
+      )}`,
     };
   });
   res.status(200).send({
