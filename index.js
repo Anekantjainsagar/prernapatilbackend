@@ -73,7 +73,7 @@ app.post("/addBlog", uploads.single("image"), (req, res) => {
       res.status(200).json({ Success: true, message: msg });
     })
     .catch((err) => {
-      res.status(300).json({ Success: false, message: err });
+      res.status(300).json({ Success: false, message: err, message: msg });
     });
 });
 
