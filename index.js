@@ -100,7 +100,7 @@ app.get("/getBlog", async (req, res) => {
       description: post.description,
       date: post.date,
       _id: post._id,
-      image: `data:${post.image.contentType};base64${post.image.data?.toString(
+      image: `data:${post.image.contentType};base64,${post.image.data?.toString(
         "base64"
       )}`,
     };
