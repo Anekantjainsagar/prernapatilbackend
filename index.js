@@ -56,11 +56,15 @@ app.get("/getMessages", async (req, res) => {
   res.status(200).send({ Success: true, messages });
 });
 
-app.post("/addBlog", (req, res) => {
+app.post("/addBlog", uploads.single("image"), (req, res) => {
+  const image = req.file;
   const { title, description } = req.body;
+  console.log(req.body);
+  console.log(image);
   const post = new Post({
     title,
     description,
+    image,
   });
 
   post
@@ -72,8 +76,6 @@ app.post("/addBlog", (req, res) => {
       res.status(300).json({ Success: false, message: err });
     });
 });
-
-app.put("/setImage", uploads.single("image"), (req, res) => {});
 
 app.get("/getBlog", async (req, res) => {
   var { page, size } = req.query;
@@ -95,7 +97,7 @@ app.get("/getBlog", async (req, res) => {
       description: post.description,
       date: post.date,
       _id: post._id,
-      image: `data:${post.image.contentType};base64${post.image.data.toString(
+      image: `data:${post.image.contentType};base64${post.image.data?.toString(
         "base64"
       )}`,
     };
