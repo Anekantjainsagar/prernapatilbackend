@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const Contact = require("./model/model");
 const Post = require("./model/PostModel");
+const Categories = require("./model/Categories");
 const multer = require("multer");
 const port = process.env.PORT || 5000;
 const fs = require("fs");
@@ -58,10 +59,11 @@ app.get("/getMessages", async (req, res) => {
 
 app.post("/addBlog", uploads.single("image"), (req, res) => {
   const image = req.file;
-  const { title, description } = req.body;
+  const { title, description, cat } = req.body;
   console.log(image);
   const post = new Post({
     title,
+    category: cat,
     description,
     image: {
       data: fs.readFileSync("uploads/" + req.file.filename),
@@ -103,6 +105,7 @@ app.get("/getBlog", async (req, res) => {
       image: `data:${post.image.contentType};base64,${post.image.data?.toString(
         "base64"
       )}`,
+      category: post.category,
     };
   });
   res.status(200).send({
@@ -128,6 +131,30 @@ app.put("/updateBlog", (req, res) => {
 app.delete("/deleteBlog", (req, res) => {
   const { id } = req.body;
   Post.deleteOne({ _id: id }, (err, data) => {
+    res.status(200).send({ Success: true, err, data });
+  });
+});
+
+app.get("/getCategories", async (req, res) => {
+  const cat = await Categories.find();
+  res.json({ categories: cat });
+});
+
+app.post("/addCategory", (req, res) => {
+  const category = new Categories({ name: req.body.cat });
+  category
+    .save()
+    .then(() => {
+      res.status(200).json({ Success: true, category: category });
+    })
+    .catch((err) => {
+      res.status(300).json({ Success: false, err: err });
+    });
+});
+
+app.delete("/deleteCategory", (req, res) => {
+  const { id } = req.body;
+  Categories.deleteOne({ _id: id }, (err, data) => {
     res.status(200).send({ Success: true, err, data });
   });
 });
