@@ -81,6 +81,28 @@ app.post("/addBlog", uploads.single("image"), (req, res) => {
     });
 });
 
+app.put("/addBlogToCategory", (req, res) => {
+  const { blogId, catId } = req.body;
+  Categories.updateOne(
+    { _id: catId },
+    { $push: { posts: blogId } },
+    (err, data) => {
+      res.status(200).json({ data: data, err: err });
+    }
+  );
+});
+
+app.put("/removeBlogFromCategory", (req, res) => {
+  const { blogId, catId } = req.body;
+  Categories.updateOne(
+    { _id: catId },
+    { $pull: { posts: blogId } },
+    (err, data) => {
+      res.status(200).json({ data: data, err: err });
+    }
+  );
+});
+
 app.get("/getBlog", async (req, res) => {
   var { page, size } = req.query;
 
@@ -139,7 +161,8 @@ app.get("/getCategories", async (req, res) => {
   const cat = await Categories.find();
   res.json({ categories: cat });
 });
--app.post("/addCategory", (req, res) => {
+
+app.post("/addCategory", (req, res) => {
   const category = new Categories({ name: req.body.cat });
   category
     .save()
