@@ -118,10 +118,10 @@ app.get("/getBlog", async (req, res) => {
 });
 
 app.put("/updateBlog", (req, res) => {
-  const { title, description, id } = req.body;
+  const { title, description, id, category } = req.body;
   Post.updateOne(
     { _id: id },
-    { title: title, description: description },
+    { title: title, description: description, category: category },
     (err, data) => {
       res.status(200).send({ Success: true, err, data });
     }
