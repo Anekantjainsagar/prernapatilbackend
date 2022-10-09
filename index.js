@@ -82,9 +82,9 @@ app.post("/addBlog", uploads.single("image"), (req, res) => {
 });
 
 app.put("/addBlogToCategory", (req, res) => {
-  const { blogId, catId } = req.body;
+  const { blogId, category } = req.body;
   Categories.updateOne(
-    { _id: catId },
+    { name: category },
     { $push: { posts: blogId } },
     (err, data) => {
       res.status(200).json({ data: data, err: err });
@@ -93,9 +93,9 @@ app.put("/addBlogToCategory", (req, res) => {
 });
 
 app.put("/removeBlogFromCategory", (req, res) => {
-  const { blogId, catId } = req.body;
+  const { blogId, category } = req.body;
   Categories.updateOne(
-    { _id: catId },
+    { name: category },
     { $pull: { posts: blogId } },
     (err, data) => {
       res.status(200).json({ data: data, err: err });
