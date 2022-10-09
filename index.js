@@ -118,10 +118,10 @@ app.get("/getBlog", async (req, res) => {
 });
 
 app.put("/updateBlog", (req, res) => {
-  const { title, description, image, id } = req.body;
+  const { title, description, id } = req.body;
   Post.updateOne(
     { _id: id },
-    { title: title, description: description, image: image },
+    { title: title, description: description },
     (err, data) => {
       res.status(200).send({ Success: true, err, data });
     }
@@ -139,8 +139,7 @@ app.get("/getCategories", async (req, res) => {
   const cat = await Categories.find();
   res.json({ categories: cat });
 });
-
-app.post("/addCategory", (req, res) => {
+-app.post("/addCategory", (req, res) => {
   const category = new Categories({ name: req.body.cat });
   category
     .save()
