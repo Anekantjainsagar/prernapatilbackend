@@ -103,6 +103,7 @@ app.put("/removeBlogFromCategory", (req, res) => {
   );
 });
 
+
 app.get("/getBlog", async (req, res) => {
   var { page, size } = req.query;
 
